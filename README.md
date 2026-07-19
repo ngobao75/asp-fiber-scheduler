@@ -195,8 +195,8 @@ save into.
 
 The initial 4096-byte stack size caused a segfault specifically on the
 first resume of a yielded fiber (not on initial entry). The call chain
-through `yield()` — including `spawn()`'s ArrayList append and allocator
-calls, plus `std.debug.print`'s formatting — is deeper than the simple
+through `yield()`,including `spawn()`'s ArrayList append and allocator
+calls, plus `std.debug.print`'s formatting ,is deeper than the simple
 fibers in Task 1b/2, and 4096 bytes proved insufficient headroom,
 especially under Debug-build safety checks. Increasing STACK_SIZE to
 64KB resolved it. This highlights that fiber stack sizing must account
