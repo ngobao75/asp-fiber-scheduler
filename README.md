@@ -28,9 +28,9 @@ zig build test        # run unit tests
 zig build test --summary all    # to get a confirmation with a summary when run unit tests
 ```
 
-## Task 1 — Context operations 
+## Task 1 :Context operations 
 
-### 1a — get_context/set_context loop
+### 1a : get_context/set_context loop
 
 This program demonstrates the core mechanism behind fiber context switching
 using a single stack (no manual stack setup yet, it will come in 1b).
@@ -82,7 +82,7 @@ entirely), producing incorrect behaviour. Marking the pointer to `x` as
 program order, with no caching or elimination. So the second, mutated
 value of `x` is guaranteed to be seen when the branch re-executes.
 
-## 1b — foo as a fiber (manual stack)
+## 1b :foo as a fiber (manual stack)
 
 `foo` is launched by manually constructing a `Context`:
 - `rsp` points into a locally-allocated 4096-byte buffer, adjusted to the
@@ -112,7 +112,7 @@ This demonstrates why the assignment brief requires fibers to call
 constructed stack has no valid return address for the CPU to fall back
 into.
 
-### goo — second fiber
+### goo - second fiber
 
 `foo`, instead of returning (which crashes, as shown above), explicitly
 calls `set_context(&c_goo)` at the end of its body to hand control to a
@@ -128,7 +128,7 @@ return for the same reason `foo` did, so its manually-built stack has no
 valid return address either. This reinforces the need for an explicit
 `fiber_exit()` mechanism, which Task 2/3 introduce.
 
-## Task 2 — Fiber class and scheduler
+## Task 2: Fiber class and scheduler
 ### `fiber` struct
 The `fiber` struct bundles a `Context` and its own fixed-size stack
 (64KB — see note under Task 3). Rather than a factory function that
@@ -162,7 +162,7 @@ scheduler" except through shared global state.
 as a `self: *scheduler` parameter. This caused a segfault, because `self`
 could be held in a caller-saved register, which is not preserved across
 the manual context switch performed by `get_context`/`set_context` (only
-callee-saved registers — rbx, rbp, r12-r15 — survive). The fix was to
+callee-saved registers : rbx, rbp, r12-r15 survive). The fix was to
 have `do_it` operate on the global `s` directly rather than through a
 parameter, so state is always read from a fixed memory address.
 
@@ -178,7 +178,7 @@ Since `?*anyopaque` is untyped, retrieving it requires two casts:
 since Zig cannot statically verify that an untyped pointer's alignment
 satisfies the target type's requirements.
 
-## Task 3 — Yield
+## Task 3: Yield
 `yield()` uses `swap_context(out, in)` rather than `set_context`, since it
 needs to both save the currently-running fiber's execution point (so it
 can resume later, exactly where it left off) and jump to the scheduler
